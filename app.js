@@ -21,7 +21,7 @@ router.route("/").get(async (req, res) => {
 
 router.route("/add").post(async (req, res) => {
   try {
-    // console.log("req and res newpost", req.body);
+    console.log("req and res newpost", req.body);
 
     const newPost = await postModel.create(req.body);
     res.status(201).json({
@@ -124,6 +124,30 @@ router.route(`/signup`).post(async (req, res) => {
     res.status(401).json({
       status: "fail",
       message: err.message,
+    });
+  }
+});
+
+router.route("/login").post(async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const userDetails = await userModel.findOne({ email: email });
+    console.log('user details',userDetails)
+    if (userDetails && password === userDetails?.password)
+      res.status(200).json({
+        status: "Success",
+        message: "Login successfull",
+        userData: {
+          name: userDetails?.name,
+          email,
+          id: userDetails?.id||'test_user_id',
+        },
+      });
+    else throw Error("Unauthorized");
+  } catch (e) {
+    res.status(401).json({
+      status: "fail",
+      message: "Unauthorized",
     });
   }
 });

@@ -6,6 +6,7 @@ const UserSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, "name is required"],
+      unique:true
     },
     email: {
       type: String,
@@ -15,9 +16,8 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "password is required"],
-      unique: true,
     },
-    userId: {
+    id: {
       type: String,
       unique: true,
     },
@@ -30,7 +30,9 @@ const UserSchema = new mongoose.Schema(
 
 // DOCUMENT MIDDLEWARE: runs before .save() and .create()
 UserSchema.pre("save", function (next) {
-  this.userId = slugify(this.name + "-" + this.email, { lower: true });
+  this.id = slugify(this.name + parseInt(Date.now() + Math.random()), {
+    lower: true,
+  });
   next();
 });
 

@@ -30,7 +30,7 @@ const postSchema = new mongoose.Schema(
       type: Array,
       default: [],
     },
-    uid: {
+    uId: {
       type: String,
       default: "user-id",
     },
