@@ -119,11 +119,23 @@ router.route(`/signup`).post(async (req, res) => {
       status: "Created",
       user: newUser,
     });
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log("err log", error);
+    let message = "";
+    if (error.code === 11000) {
+      if (error.keyPattern.email) {
+        message = "email already exists";
+      }
+      if (error.keyPattern.name) {
+        message = "username already exists";
+      }
+    } else {
+      console.log(error);
+      message = error?.message;
+    }
     res.status(401).json({
       status: "fail",
-      message: err.message,
+      message: message,
     });
   }
 });
@@ -132,7 +144,7 @@ router.route("/login").post(async (req, res) => {
   try {
     const { email, password } = req.body;
     const userDetails = await userModel.findOne({ email: email });
-    console.log('user details',userDetails)
+    console.log("user details", userDetails);
     if (userDetails && password === userDetails?.password)
       res.status(200).json({
         status: "Success",
@@ -140,7 +152,7 @@ router.route("/login").post(async (req, res) => {
         userData: {
           name: userDetails?.name,
           email,
-          id: userDetails?.id||'test_user_id',
+          id: userDetails?.id || "test_user_id",
         },
       });
     else throw Error("Unauthorized");
