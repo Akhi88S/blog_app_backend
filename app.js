@@ -1,4 +1,5 @@
 const express = require("express");
+const axios=require('axios');
 const app = express();
 const cors = require("cors");
 app.use(express.json());
@@ -19,6 +20,25 @@ router.route("/").get(async (req, res) => {
   }
 });
 
+router.route('/generate-random-pickuplines').get(async (req, res) => {
+  try{
+
+    const response = await axios.get(process.env.API)
+    
+    console.log('res',response.data)
+      res.status(200).json({
+      status: "Success",
+      data: response.data,
+    });
+  }
+  catch(e){
+    console.log('err',e)
+      res.status(404).json({
+      status: "fail",
+      message: res.data,
+    });
+  }
+})
 router.route("/add").post(async (req, res) => {
   try {
     console.log("req and res newpost", req.body);
@@ -166,4 +186,5 @@ router.route("/login").post(async (req, res) => {
 
 app.use("/post", router);
 app.use("/user", router);
+app.use("/utility", router);
 module.exports = app;
