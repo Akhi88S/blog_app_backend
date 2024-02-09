@@ -70,10 +70,17 @@ router.route("/generate-reply").get(async (req, res) => {
     );
 
     const response = await completionsRes.json();
-    res.status(200).json({
-      status: "Success",
-      data: response.choices[0].message.content,
-    });
+    console.log("resp", response.choices[0]);
+    if (response?.choices?.[0]?.message?.content)
+      res.status(200).json({
+        status: "Success",
+        data: response.choices[0].message.content,
+      });
+    else
+      res.status(200).json({
+        status: "Success",
+        data: "Oops, somtehing went wrong. Try sending message again!",
+      });
   } catch (e) {
     res.status(400).json({
       status: "fail",
